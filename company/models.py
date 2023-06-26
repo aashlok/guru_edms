@@ -16,7 +16,7 @@ Only one instance per installation is required.
         verbose_name='Company Name',
     )
     short_code = models.CharField(
-        max_length=4,
+        max_length=10,
         help_text='Company short code to use in file naming',
         verbose_name='Short Code',
     )
@@ -27,11 +27,13 @@ Only one instance per installation is required.
     )
     fileserver_name = models.CharField(
         max_length=50,
+        null=True, blank=True,
         help_text='Computer name of fileserver',
         verbose_name='Server Name'
     )
     fileserver_user = models.CharField(
         max_length=50,
+        null=True, blank=True,
         help_text='Username of fileserver computer',
         verbose_name='Server User'
     )
