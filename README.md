@@ -3,7 +3,9 @@
 
 Guru EDMS is an application to organize files in a small office.
 
-## Available Featuers:
+Status: Sketch in progress
+
+## In-progress Featuers:
 * Written considering needs of AEC(Architecture, Engineering and Construction) type of offices, but can easily accomodate needs of any other type of business activity.
 * Application is LAN based i.e. locally installed, not dependant on internet.
 * Document movement within LAN is non-destructive. 
@@ -16,7 +18,7 @@ Guru EDMS is an application to organize files in a small office.
 * Customizable document labelling
 * Document versioning and revisioning
 
-## In-progress Features:
+## Expansion Features:
 * Backup- Full or Selective
 * Multi Storage Management
 * Workflow Templates
