@@ -44,11 +44,11 @@
 	      </a>
 	    </li>
 	    <li>
-	      <a href="Designations">Designations
+	      <a href="{% url 'company:designations' %}">Designations
 	      </a>
 	    </li>
 	    <li>
-	      <a href="Document Types">Document Types
+	      <a href="{% url 'document:document-types' %}">Document Types
 	      </a>
 	    </li>
           </ul>
@@ -59,7 +59,7 @@
 	    <li>User: {{ user.get_username }}
 	    </li>
 	    <li>
-	      <a href="{% url 'logout' %}?next={{ request.path }}">Logout
+	      <a href="{% url 'logout' %}">Logout
 	      </a>
 	    </li>
 	    {% else %}

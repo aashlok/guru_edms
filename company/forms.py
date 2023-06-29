@@ -25,3 +25,12 @@ class CompanySetupForm(ModelForm):
     class Meta:
         model = Company
         fields = ['name', 'short_code', 'fileserver_folder']
+
+
+class DesignationForm(ModelForm):
+    class Meta:
+        model = Designation
+        fields = ['title', 'document_type_permission',
+                  'employee_crud_permission',
+                  'project_crud_permission',
+                  'document_crud_permission']

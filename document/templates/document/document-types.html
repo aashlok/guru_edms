@@ -1,0 +1,28 @@
+{% extends "common.html" %}
+
+{% block content %}
+
+<h3>List of Document Types</h3>
+<div>
+    {% if doc_type_list %}
+    <ul>
+      {% for doc_type in doc_type_list %}
+      <li>
+        {{ doc_type.label }} :  {{ doc_type.short_code }}
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No Docuemnt Type Created.</p>
+  {% endif %}
+</div>
+
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Add Document Type" />
+    </form>
+</div>
+
+{% endblock %}

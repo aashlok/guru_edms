@@ -1,16 +1,17 @@
 import os
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 
+from document.models import DocumentType
 from .models import Company, Designation, Employee
-from .forms import CompanySetupForm
-from project.models import Project
-from document.models import Document, DocumentFile, DocumentType
+from .forms import CompanySetupForm, DesignationForm
+# from project.models import Project
+
 
 # Create your views here.
 
@@ -83,6 +84,23 @@ Shows summary of configuration.
         'num_doc_types': num_doc_types
     }
     return render(request, 'company/configuration.html', context=context)
+
+
+@login_required
+@staff_member_required
+def designations(request):
+    designation_list = Designation.objects.all()
+
+    if request.method == 'POST':
+        form = DesignationForm(request.POST)
+        form.save()
+        messages.info(request, 'New Designation added successfully')
+        return HttpResponseRedirect(request.path_info)
+    else:
+        form = DesignationForm()
+
+    context = {'form': form, 'designation_list': designation_list}
+    return render(request, 'company/designations.html', context)
 
 
 @login_required

@@ -1,0 +1,28 @@
+{% extends "common.html" %}
+
+{% block content %}
+
+<h3>List of Designations</h3>
+<div>
+    {% if designation_list %}
+    <ul>
+      {% for designation in designation_list %}
+      <li>
+        {{ designation.title }} : {{ designation.document_type_permission.all|join:", " }}
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No Designation Created.</p>
+  {% endif %}
+</div>
+
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Add Designation" />
+    </form>
+</div>
+
+{% endblock %}
