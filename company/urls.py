@@ -9,4 +9,6 @@ urlpatterns = [
     path('initial-setup/', views.initialSetup, name='initial-setup'),
     path('configuration/', views.configuration, name='configuration'),
     path('designations/', views.designations, name='designations'),
+    path('employees/', views.EmployeeListView.as_view(), name='employees'),
+    path('add-employee/', views.addEmployee, name='add-employee'),
 ]

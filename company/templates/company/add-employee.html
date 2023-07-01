@@ -1,0 +1,17 @@
+{% extends "common.html" %}
+
+{% block content %}
+
+<div>
+    <form method="POST" action="">
+      {% csrf_token %}
+      <h3>Add new employee</h3>
+      
+      {{ user_form.as_p }}
+      {{ employee_form.as_p }}
+      
+      <input type="submit" value="Add Employee" />
+    </form>
+</div>
+
+{% endblock %}

@@ -3,13 +3,16 @@ import os
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
+from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 
 from document.models import DocumentType
 from .models import Company, Designation, Employee
-from .forms import CompanySetupForm, DesignationForm
+from .forms import (CompanySetupForm, DesignationForm, NewUserForm,
+                    NewEmployeeForm)
 # from project.models import Project
 
 
@@ -18,6 +21,7 @@ from .forms import CompanySetupForm, DesignationForm
 
 def initialSetup(request):
     """
+Step 1
 View sets up company for the first time.
 Create new local admin, not same as django superuser.
 Only admin.company can add Designations, DocumentType and Employees
@@ -89,6 +93,14 @@ Shows summary of configuration.
 @login_required
 @staff_member_required
 def designations(request):
+    """
+Step 3
+Adds designation and shows list
+Most Designations must be set before adding employees
+because designations are essential for access control
+Every designation is attached to type of document given
+designation can access.
+"""
     designation_list = Designation.objects.all()
 
     if request.method == 'POST':
@@ -101,6 +113,46 @@ def designations(request):
 
     context = {'form': form, 'designation_list': designation_list}
     return render(request, 'company/designations.html', context)
+
+
+@login_required
+@staff_member_required
+def addEmployee(request):
+    """
+Step 5
+Adds django inbuilt User and custom employee in the same page.
+Employee primarily holds designation and shared folder info
+Creates employee folder to store local files 
+"""
+    if request.method == 'POST':
+        user_form = NewUserForm(request.POST)
+        employee_form = NewEmployeeForm(request.POST)
+        if user_form.is_valid():
+            newuser = user_form.save(commit=False)
+            newuser.username = (newuser.first_name.lower()
+                                + '.' + newuser.last_name.lower())
+            newuser.save()
+            newemployee = employee_form.save(commit=False)
+            newemployee.user = newuser
+            newemployee.shared_folder = os.path.join(
+                newemployee.shared_folder, (newuser.first_name
+                                            + '-' + newuser.last_name)
+            )
+            newemployee.save()
+            os.mkdir(newemployee.shared_folder)  # check errors
+            return redirect('company:employees')
+    else:
+        user_form = NewUserForm()
+        employee_form = NewEmployeeForm()
+
+    context = {'user_form': user_form, 'employee_form': employee_form}
+    return render(request, 'company/add-employee.html', context)
+
+
+# @staff_member_required
+class EmployeeListView(LoginRequiredMixin, generic.ListView):
+    model = Employee
+    template_name = 'company/employees.html'
 
 
 @login_required

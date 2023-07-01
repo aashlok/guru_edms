@@ -50,6 +50,8 @@ Designations of employees in the company.
 Designation is allotted access to document depending on their type.
 Additionally allotted permissions to Create Update Delete operations.
 Must be created before creating employees.
+Providing permissions here saves accessing django admin interface
+as far as possible. 
 """
     title = models.CharField(
         max_length=100,
@@ -104,12 +106,12 @@ Important fields are designation and shared folder.
     )
     date_joined = models.DateField(
         null=True, blank=True,
-        help_text='employee join date',
+        help_text='Employee join date',
         verbose_name='Join Date',
     )
     date_left = models.DateField(
         null=True, blank=True,
-        help_text='employee left date',
+        help_text='Employee left date',
         verbose_name='Left Date',
     )
     shared_folder = models.CharField(

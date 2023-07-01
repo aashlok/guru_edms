@@ -13,12 +13,19 @@ from .forms import DocumentTypeForm
 @login_required
 @staff_member_required
 def documentTypes(request):
+    """
+Step 2
+Adds Document type company uses for daily operations.
+Shows list of added Document Type.
+These are alloted to designations hence must be set before
+designations.
+"""
     doc_type_list = DocumentType.objects.all()
 
     if request.method == 'POST':
         form = DocumentTypeForm(request.POST)
         form.save()
-        messages.info(request, 'New Document Type added successfully')
+        messages.info(request, 'New Document Type added')
         return HttpResponseRedirect(request.path_info)
     else:
         form = DocumentTypeForm()

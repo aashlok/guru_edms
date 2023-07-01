@@ -1,0 +1,19 @@
+{% extends "common.html" %}
+
+{% block content %}
+<h3>Employee List</h3>
+<a href="{% url 'company:add-employee' %}">Add New Employee</a>
+
+  {% if employee_list %}
+    <ul>
+      {% for employee in employee_list %}
+      <li>
+       {{ employee.user.username }}
+        ({{employee.designation}}) Folder:{{employee.shared_folder}}
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No Employee Created.</p>
+  {% endif %}
+{% endblock %}
