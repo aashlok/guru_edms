@@ -52,6 +52,13 @@
 	      </a>
 	    </li>
           </ul>
+	  {% else %}
+	  <ul class="sidebar-nav">
+	    <li>
+	      <a href="{% url 'project:projects' %}">Projects
+	      </a>
+	    </li>
+	  </ul>
 	  {% endif %}
 	  
 	  <ul class="sidebar-nav">
@@ -64,7 +71,7 @@
 	    </li>
 	    {% else %}
 	    <li>
-	      <a href="{% url 'login' %}?next={{ request.path }}">Login
+	      <a href="{% url 'login' %}">Login
 	      </a>
 	    </li>
 	    {% endif %}

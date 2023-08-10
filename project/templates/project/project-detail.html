@@ -1,0 +1,11 @@
+{% extends "common.html" %}
+
+{% block content %}
+<h1>Project: {{ project.name }}</h1>
+
+<p><strong>Manager:</strong>{{ project.manager }}</p>
+<p><strong>Folder:</strong> {{ project.project_folder }}</p>
+<p><strong>Team:</strong> {{ project.members.all|join:", " }}</p>
+
+{% endblock %}
+
