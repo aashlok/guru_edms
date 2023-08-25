@@ -14,12 +14,12 @@ location of central document storage
 """
     name = models.CharField(
         max_length=200,
-        help_text='full project name',
+        help_text='Full project name',
         verbose_name='Name',
     )
     short_code = models.CharField(
         max_length=4,
-        help_text='short project code to use in file naming',
+        help_text='Short project code to use in file naming',
         verbose_name='Code',
     )
     start_date = models.DateField(
@@ -68,4 +68,4 @@ location of central document storage
         return self.name
 
     def get_absolute_url(self):
-        return reverse('project-detail', args=[str(self.id)])
+        return reverse('project:project-detail', args=[str(self.id)])

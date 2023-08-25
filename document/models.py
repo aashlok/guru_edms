@@ -60,7 +60,7 @@ Includes permanent information about document
     )
     label = models.CharField(
         max_length=50,
-        help_text=('Simple name of Document set at creation',
+        help_text=('Simple name of Document Folder at creation. '
                    'NOT name of actual file'),
         verbose_name='Label',
     )

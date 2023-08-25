@@ -25,9 +25,9 @@ Creates project directory in file server as specified in company setup
 """
     # check permissions
     perm = request.user.employee.designation.project_crud_permission
-    if perm == False:
+    if not perm:
         messages.info(request, 'You dont have Project Creation Permission')
-        return redirect('index')
+        return redirect('company:index')
 
     form = NewProjectForm()
     # exclude project creator employees from member list
@@ -58,6 +58,10 @@ Creates project directory in file server as specified in company setup
 class ProjectListView(LoginRequiredMixin, generic.ListView):
     model = Project
     template_name = 'project/project-list.html'
+    context_object_name = 'project_list'
+
+    def get_queryset(self):
+        return Project.objects.filter(members__id=self.request.user.employee.id)
 
 
 class ProjectDetailView(LoginRequiredMixin, generic.DetailView):

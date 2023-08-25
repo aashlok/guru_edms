@@ -1,7 +1,38 @@
 {% extends "common.html" %}
 
 {% block content %}
-<h2>Index Page</h2>
-<p>Page houses immediate review of logged in employee</p>
+<h2>Index Page
+</h2>
+
+<h4>List of Project 
+</h4>
+  <ul>
+    {% for project in projects %}
+    <li>{{ project.name }}
+    </li>
+    {% endfor %}
+  </ul>
+
+<h4>Allotted Files
+</h4>
+  <ul>
+    {% for pfile in issued_files %}
+    <li>
+      <a href="{% url 'document:document-file-detail' pfile.id %}">{{ pfile.filename }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  
+<h4>In Progress Files
+</h4>
+  <ul>
+    {% for pfile in working_files %}
+    <li>
+      <a href="{% url 'document:document-file-detail' pfile.id %}">{{ pfile.filename }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
 
 {% endblock %}

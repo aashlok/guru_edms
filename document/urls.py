@@ -5,10 +5,16 @@ from . import views
 app_name = 'document'
 
 urlpatterns = [
-    path('document-types/', views.documentTypes, name='document-types'),
-    path('create-document/', views.createDocument, name='create-document'),
-    path('add-document-file/', views.addDocumentFile,
+    path('document-types/', views.documentTypes,
+         name='document-types'),
+    path('<int:pk>/create-document/', views.createDocument,
+         name='create-document'),
+    path('document-detail/<int:pk>', views.DocumentDetailView.as_view(),
+         name='document-detail'),
+    path('<int:pk>/add-document-file/', views.addDocumentFile,
          name='add-document-file'),
+    path('document-file-detail/<int:pk>', views.DocumentFileDetailView.as_view(),
+         name='document-file-detail'),
     path('revise-document-file/', views.reviseDocumentFile,
          name='revise-document-file'),
 ]

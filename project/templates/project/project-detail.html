@@ -7,5 +7,33 @@
 <p><strong>Folder:</strong> {{ project.project_folder }}</p>
 <p><strong>Team:</strong> {{ project.members.all|join:", " }}</p>
 
+<p><a href="/document/{{ project.id }}/create-document/">Add Document Record</a></p>
+
+<h4>Documents</h4>
+<div>
+<table >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>User</th>
+        <th>Save Count</th>
+	<th>Information</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for doc in project.document_set.all %}
+      <tr>
+        <td><a href="/document/document-detail/{{ doc.id }}">{{ doc.label }}</a></td>
+        <td>{{ doc.document_type }}</td>
+        <td>{{ doc.document_user }}</td>
+        <td>{{ doc.save_count }}</td>
+        <td>{{ doc.information }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
 {% endblock %}
 

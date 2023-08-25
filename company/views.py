@@ -8,12 +8,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
+from django.db.models import Q
 
-from document.models import DocumentType
+
 from .models import Company, Designation, Employee
 from .forms import (CompanySetupForm, DesignationForm, NewUserForm,
                     NewEmployeeForm)
-# from project.models import Project
+from document.models import DocumentType, Document, DocumentFile
+from project.models import Project
 
 
 # Create your views here.
@@ -121,8 +123,9 @@ def addEmployee(request):
     """
 Step 5
 Adds django inbuilt User and custom employee in the same page.
-Employee primarily holds designation and shared folder info
-Creates employee folder to store local files 
+Employee primarily holds designation and shared folder info.
+Creates employee folder to store local files.
+If employee has document crud permission create upload folder.
 """
     if request.method == 'POST':
         user_form = NewUserForm(request.POST)
@@ -138,8 +141,10 @@ Creates employee folder to store local files
                 newemployee.shared_folder, (newuser.first_name
                                             + '-' + newuser.last_name)
             )
-            newemployee.save()
             os.mkdir(newemployee.shared_folder)  # check errors
+            if employee_form.instance.designation.document_crud_permission:
+                os.mkdir(os.path.join(newemployee.shared_folder, 'upload'))
+            newemployee.save()
             return redirect('company:employees')
     else:
         user_form = NewUserForm()
@@ -160,5 +165,16 @@ def index(request):
     if request.user.is_staff:
         return redirect('company:configuration')
 
-    context = {}
+    employee = request.user.employee
+    projects = Project.objects.filter(members__id=employee.id)
+    issued_files = DocumentFile.objects.filter(
+        Q(status='n') | Q(status='i'), document__document_user=employee
+    )
+    working_files = DocumentFile.objects.filter(
+        document__document_user=employee, status='p'
+    )
+
+    context = {'projects': projects,
+               'issued_files': issued_files,
+               'working_files': working_files}
     return render(request, 'index.html', context=context)

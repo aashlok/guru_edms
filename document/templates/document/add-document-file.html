@@ -1,0 +1,24 @@
+{% extends "common.html" %}
+
+{% block content %}
+
+<div>
+    <form method="POST" action="">
+      {% csrf_token %}
+      <fieldset>
+	<legend>Select File to add</legend>
+	
+      {% for pfile in source_files %}
+      <div >
+	<input type="radio" name="local_file" id="{{ pfile }}" value="{{ pfile }}">
+	<label for="{{ pfile }}"> {{ pfile }} </label><br>
+      </div>
+      {% endfor %}
+      
+      </fieldset>
+        {{form.as_p}}
+        <input type="submit" value="Add Document File" />
+    </form>
+</div>
+
+{% endblock %}

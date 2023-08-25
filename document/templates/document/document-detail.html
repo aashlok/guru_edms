@@ -1,0 +1,45 @@
+{% extends "common.html" %}
+
+{% block content %}
+<h3>Document Label: {{ document.label }}</h3>
+
+<p><strong>Project:</strong>{{ document.project }}</p>
+<p><strong>User:</strong>{{ document.document_user }}</p>
+<p><strong>Type:</strong>{{ document.document_type }}</p>
+<p><strong>Created:</strong>{{ document.created_date }}</p>
+<p><strong>Active:</strong>{{ document.active }}</p>
+<p><strong>Save Count:</strong>{{ document.save_count }}</p>
+<p><strong>Information:</strong>{{ document.information }}</p>
+
+<p><a href="/document/{{ document.id }}/add-document-file/">Add File</a></p>
+
+ <h4>Files in this document record</h4>
+<div>
+<table >
+    <thead>
+      <tr>
+        <th>FileName</th>
+        <th>Modified</th>
+        <th>Status</th>
+        <th>Version</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for pfile in document.documentfile_set.all %}
+      <tr>
+        <td><a href="/document/document-file-detail/{{ pfile.id }}">{{ pfile.filename }}</a></td>
+        <td>{{ pfile.modified_date }}</td>
+        <td>{{ pfile.get_status_display }}</td>
+        <td>{{ pfile.version }}</td>
+        <td>{{ pfile.revision_comment }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <div style="margin-left:20px;margin-top:20px">
+   
+  </div>
+{% endblock %}
