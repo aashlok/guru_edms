@@ -25,4 +25,4 @@ class NewDocumentFileForm(ModelForm):
 
 
 class DocumentFileRevisionForm(forms.Form):
-    pass
+    revision_note = forms.CharField(label="Revision Note", max_length=200)

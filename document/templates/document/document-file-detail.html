@@ -1,17 +1,58 @@
 {% extends "common.html" %}
 
 {% block content %}
-<h3>Document File Name: {{ documentfile.filename }}</h3>
+<h4>Document File Name: {{ documentfile.filename }}
+</h4>
 
-<p><strong>Central Folder:</strong>{{ documentfile.central_folder }}</p>
-<p><strong>Fetch Folder:</strong>{{ documentfile.fetch_folder }}</p>
-<p><strong>Access Date:</strong>{{ documentfile.access_date }}</p>
-<p><strong>Modified Date:</strong>{{ documentfile.modified_date }}</p>
-<p><strong>Due date:</strong>{{ documentfile.due_date }}</p>
-<p><strong>Status:</strong>{{ documentfile.get_status_display }}</p>
-<p><strong>Version:</strong>{{ documentfile.version }}</p>
-<p><strong>Revision:</strong>{{ documentfile.revision }}</p>
-<p><strong>Task Comment:</strong>{{ documentfile.task_comment }}</p>
-<p><strong>Revison Comment:</strong>{{ documentfile.revision_comment }}</p>
+<p>
+  <strong>Central Folder:
+  </strong>{{ documentfile.central_folder }}
+</p>
+<p>
+  <strong>Fetch Folder:
+  </strong>{{ documentfile.fetch_folder }}
+</p>
+<p>
+  <strong>Access Date:
+  </strong>{{ documentfile.access_date }}
+</p>
+<p>
+  <strong>Modified Date:
+  </strong>{{ documentfile.modified_date }}
+</p>
+<p>
+  <strong>Due date:
+  </strong>{{ documentfile.due_date }}
+</p>
+<p>
+  <strong>Status:
+  </strong>{{ documentfile.get_status_display }}
+</p>
+<p>
+  <strong>Version:
+  </strong>{{ documentfile.version }}
+</p>
+<p>
+  <strong>Revision:
+  </strong>{{ documentfile.revision }}
+</p>
+<p>
+  <strong>Task Comment:
+  </strong>{{ documentfile.task_comment }}
+</p>
+<p>
+  <strong>Revison Comment:
+  </strong>{{ documentfile.revision_comment }}
+</p>
+
+{% if documentfile.document.document_user == request.user.employee %}
+{% if documentfile.status == 'n' %}
+<a href="{% url 'document:fetch-document-file' documentfile.id %}">Fetch File
+</a>
+{% elif documentfile.status == 'p' %}
+<a href="{% url 'document:revise-document-file' documentfile.id %}">Revise File
+</a>
+{% endif %}
+{% endif %}
 
 {% endblock %}

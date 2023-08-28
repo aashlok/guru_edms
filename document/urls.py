@@ -15,6 +15,8 @@ urlpatterns = [
          name='add-document-file'),
     path('document-file-detail/<int:pk>', views.DocumentFileDetailView.as_view(),
          name='document-file-detail'),
-    path('revise-document-file/', views.reviseDocumentFile,
+    path('fetch-document-file/<int:pk>', views.fetchDocumentFile,
+         name='fetch-document-file'),
+    path('revise-document-file/<int:pk>', views.reviseDocumentFile,
          name='revise-document-file'),
 ]
