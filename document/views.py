@@ -1,9 +1,10 @@
 import os
 import shutil
+import re
 from datetime import datetime
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect  # HttpResponse,
 from django.contrib import messages
 from django.views import generic
 
@@ -11,12 +12,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.admin.views.decorators import staff_member_required
 
-
+from project.models import Project
+# from company.models import Employee, Designation
 from .models import DocumentType, Document, DocumentFile
 from .forms import (DocumentTypeForm, NewDocumentForm, NewDocumentFileForm,
                     DocumentFileRevisionForm)
-from company.models import Employee, Designation
-from project.models import Project
+
+
 # Create your views here.
 
 
@@ -66,10 +68,11 @@ Assigns employee who is expected to work on this document.
     if request.method == 'POST':
         form = NewDocumentForm(request.POST)
         new_document = form.save(commit=False)
-        # remove '-' from name because its used as delimiter
-        new_document.label = request.POST.get('label').replace("-", "")
+        # remove all special characters
+        new_document.label = re.sub('[^a-zA-Z0-9]', '',
+                                    request.POST.get('label'))
         new_document.project = project
-        folder = os.path.join(project.project_folder, form.instance.label)
+        folder = os.path.join(project.project_folder, new_document.label)
         os.mkdir(folder)
         new_document.save()
         messages.info(request, 'New document record is created.')
@@ -103,6 +106,7 @@ Sets a new file flag.
 
     form = NewDocumentFileForm()
     document = Document.objects.get(pk=pk)
+    doc_label = document.label
     project = Project.objects.get(pk=document.project.id)
     employee = request.user.employee
     source_folder = os.path.join(employee.shared_folder, 'upload')
@@ -132,7 +136,8 @@ Sets a new file flag.
         messages.info(request, 'File is added to document record')
         return redirect('document:document-file-detail', pk=new_doc_file.id)
 
-    context = {'form': form, 'source_files': source_files}
+    context = {'form': form, 'source_files': source_files,
+               'doc_label': doc_label}
     return render(request, 'document/add-document-file.html', context)
 
 
@@ -160,7 +165,6 @@ File flag is changed to working status.
     source_file.fetch_folder = fetch_folder
     source_file.access_date = datetime.now()
     source_file.status = 'p'
-    source_file.access_date = datetime.now()
     os.makedirs(fetch_folder, exist_ok=True)
     shutil.copy(source_path, fetch_path)
     source_file.save()
@@ -195,13 +199,12 @@ File is copied from employee workstation to central file server.
             filename=revision_rename(old_doc_file.filename),
             central_folder=old_doc_file.central_folder,
             fetch_folder=old_doc_file.fetch_folder,
-            access_date=datetime.now(),
-            status='n',
+            status='r',
             version=old_doc_file.version,
             revision=old_doc_file.revision + 1,
             is_stub=False
         )
-        old_doc_file.status = 'r'
+        old_doc_file.status = 'z'
         old_doc_file.modified_date = datetime.now()
         old_doc_file.revision_comment = revision_note
         # copy-create new file at workstation
@@ -214,6 +217,7 @@ File is copied from employee workstation to central file server.
                   (old_doc_file.fetch_folder, old_doc_file.filename),
                   os.path.join
                   (old_doc_file.fetch_folder, new_doc_file.filename))
+        old_doc_file.is_stub = True
         # copy new file to file server
         shutil.copy(os.path.join
                     (new_doc_file.fetch_folder, new_doc_file.filename),
@@ -225,6 +229,7 @@ File is copied from employee workstation to central file server.
         document = Document.objects.get(id=old_doc_file.document.id)
         document.save_count = document.save_count + 1
         document.save()
+        messages.info(request, 'File is revised and uploaded to server')
         return redirect('document:document-file-detail', pk=old_doc_file.id)
 
     context = {'form': form}

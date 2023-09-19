@@ -65,7 +65,7 @@ Includes permanent information about document
         verbose_name='Label',
     )
     created_date = models.DateTimeField(
-        auto_now=True,
+        auto_now_add=True,
         help_text='Date of adding document to project',
         verbose_name='Created',
     )
@@ -108,7 +108,7 @@ includes changing information about document file instances
     )
     filename = models.CharField(
         max_length=50,
-        help_text=('Actual filename to be stored after renamed according to'
+        help_text=('Actual filename to be stored after renamed according to '
                    'predecided scheme of file labelling'),
         verbose_name='FileName',
     )
@@ -123,6 +123,11 @@ includes changing information about document file instances
         null=True, blank=True,
         help_text='Project folder location at employee workstation for use',
         verbose_name='Fetch Folder',
+    )
+    created_date = models.DateTimeField(
+        auto_now_add=True,
+        help_text='Date of adding file to document',
+        verbose_name='Created',
     )
     access_date = models.DateTimeField(
         null=True, blank=True,
@@ -146,18 +151,18 @@ includes changing information about document file instances
         ('r', 'Revised'),
         ('a', 'Approved'),
         ('f', 'Final'),
-        ('z', 'Frozen')
+        ('z', 'Archived')
     )
     status = models.CharField(
         max_length=1,
         choices=FILE_STATUS,
-        help_text=('File status set at every movement of file'
+        help_text=('File status set at every movement of file '
                    'Causes file to show up at various dashboards'),
         verbose_name='Status',
     )
     version = models.IntegerField(
         default=0,
-        help_text=('Major modification to file saved as reference point'
+        help_text=('Major modification to file saved as reference point '
                    'Always saved to central store'),
         verbose_name='Version',
     )
@@ -172,20 +177,20 @@ includes changing information about document file instances
     task_comment = models.TextField(
         max_length=200,
         null=True, blank=True,
-        help_text=('Instruction given by manager to employee'
+        help_text=('Instruction given by manager to employee '
                    'at time of issuing file for modification'),
         verbose_name='Task',
     )
     revision_comment = models.TextField(
         max_length=200,
         null=True, blank=True,
-        help_text=('Information given by employee to manager'
+        help_text=('Information given by employee to manager '
                    'after completion of given task and file upload'),
         verbose_name='Comment',
     )
     is_stub = models.BooleanField(
         default=True,
-        help_text=('when database entry exists but file operation is failed'
+        help_text=('when database entry exists but file operation is failed '
                    'or file does not physically exist'),
         verbose_name='Stub',
     )

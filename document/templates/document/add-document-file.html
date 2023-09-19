@@ -6,7 +6,7 @@
     <form method="POST" action="">
       {% csrf_token %}
       <fieldset>
-	<legend>Select File to add</legend>
+	<legend>Select File to add to "{{ doc_label }}"</legend>
 	
       {% for pfile in source_files %}
       <div >

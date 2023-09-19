@@ -1,18 +1,20 @@
 import os
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+# from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
+from company.models import Employee, Company
+from document.models import Document, DocumentFile
 from .models import Project
 from .forms import NewProjectForm
-from company.models import Employee, Company
+
 
 # Create your views here.
 
@@ -67,3 +69,14 @@ class ProjectListView(LoginRequiredMixin, generic.ListView):
 class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
     model = Project
     template_name = 'project/project-detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        doc_list = []
+        if self.request.user.employee.designation.project_crud_permission:
+            doc_list = self.object.document_set.all
+        else:
+            doc_list = self.object.document_set.filter(
+                document_user=self.request.user.employee.id)
+        context['doc_list'] = doc_list
+        return context

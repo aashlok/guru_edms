@@ -7,7 +7,9 @@
 <p><strong>Folder:</strong> {{ project.project_folder }}</p>
 <p><strong>Team:</strong> {{ project.members.all|join:", " }}</p>
 
+{% if request.user.employee.designation.document_crud_permission %}
 <p><a href="/document/{{ project.id }}/create-document/">Add Document Record</a></p>
+{% endif %}
 
 <h4>Documents</h4>
 <div>
@@ -22,7 +24,7 @@
       </tr>
     </thead>
     <tbody>
-    {% for doc in project.document_set.all %}
+    {% for doc in doc_list %}
       <tr>
         <td><a href="/document/document-detail/{{ doc.id }}">{{ doc.label }}</a></td>
         <td>{{ doc.document_type }}</td>

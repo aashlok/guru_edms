@@ -13,6 +13,10 @@
   </strong>{{ documentfile.fetch_folder }}
 </p>
 <p>
+  <strong>Created Date:
+  </strong>{{ documentfile.created_date }}
+</p>
+<p>
   <strong>Access Date:
   </strong>{{ documentfile.access_date }}
 </p>
@@ -46,7 +50,7 @@
 </p>
 
 {% if documentfile.document.document_user == request.user.employee %}
-{% if documentfile.status == 'n' %}
+{% if documentfile.status == 'n' or documentfile.status == "i" %}
 <a href="{% url 'document:fetch-document-file' documentfile.id %}">Fetch File
 </a>
 {% elif documentfile.status == 'p' %}

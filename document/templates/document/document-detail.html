@@ -11,7 +11,9 @@
 <p><strong>Save Count:</strong>{{ document.save_count }}</p>
 <p><strong>Information:</strong>{{ document.information }}</p>
 
+{% if not document.documentfile_set.all %}
 <p><a href="/document/{{ document.id }}/add-document-file/">Add File</a></p>
+{% endif %}
 
  <h4>Files in this document record</h4>
 <div>
@@ -22,7 +24,8 @@
         <th>Modified</th>
         <th>Status</th>
         <th>Version</th>
-        <th>Comment</th>
+        <th>Task</th>
+	<th>Revision</th>
       </tr>
     </thead>
     <tbody>
@@ -32,6 +35,7 @@
         <td>{{ pfile.modified_date }}</td>
         <td>{{ pfile.get_status_display }}</td>
         <td>{{ pfile.version }}</td>
+	<td>{{ pfile.task_comment }}</td>
         <td>{{ pfile.revision_comment }}</td>
       </tr>
     {% endfor %}

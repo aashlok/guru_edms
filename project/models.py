@@ -23,7 +23,7 @@ location of central document storage
         verbose_name='Code',
     )
     start_date = models.DateField(
-        auto_now=True,
+        auto_now_add=True,
         null=True, blank=True,
         help_text='Start date of Project',
         verbose_name='Start Date',
