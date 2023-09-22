@@ -1,9 +1,9 @@
 {% extends "common.html" %}
 
 {% block content %}
-<h1>Project: {{ project.name }}</h1>
+<h3>Project: {{ project.name }}</h3>
 
-<p><strong>Manager:</strong>{{ project.manager }}</p>
+<p><strong>Manager:</strong> {{ project.manager }}</p>
 <p><strong>Folder:</strong> {{ project.project_folder }}</p>
 <p><strong>Team:</strong> {{ project.members.all|join:", " }}</p>
 
@@ -16,21 +16,25 @@
 <table >
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>User</th>
-        <th>Save Count</th>
-	<th>Information</th>
+        <th>Name </th>
+        <th>User </th>
+        <th>Save </th>
+        <th>Last File </th>
+	<th>Created </th>
+	<th>Due </th>
+	<th>Status</th>
       </tr>
     </thead>
     <tbody>
-    {% for doc in doc_list %}
+    {% for doc in doc_file_list %}
       <tr>
-        <td><a href="/document/document-detail/{{ doc.id }}">{{ doc.label }}</a></td>
-        <td>{{ doc.document_type }}</td>
-        <td>{{ doc.document_user }}</td>
-        <td>{{ doc.save_count }}</td>
-        <td>{{ doc.information }}</td>
+        <td><a href="/document/document-detail/{{ doc.id }}">{{ doc.name }}</a> </td>
+        <td>{{ doc.user }} </td>
+        <td>{{ doc.save }} </td>
+        <td><a href="/document/document-file-detail/{{ doc.file_id}}">{{ doc.last_file_name }}</a> </td>
+        <td>{{ doc.last_file_created }} </td>
+	<td>{{ doc.last_file_due}} </td>
+	<td>{{ doc.last_file_status }} </td>
       </tr>
     {% endfor %}
     </tbody>
