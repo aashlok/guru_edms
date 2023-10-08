@@ -50,13 +50,27 @@
 </p>
 
 {% if documentfile.document.document_user == request.user.employee %}
-{% if documentfile.status == 'n' or documentfile.status == "i" %}
-<a href="{% url 'document:fetch-document-file' documentfile.id %}">Fetch File
-</a>
-{% elif documentfile.status == 'p' %}
-<a href="{% url 'document:revise-document-file' documentfile.id %}">Revise File
-</a>
+  {% if documentfile.status == 'n' or documentfile.status == "i" %}
+    <a href="{% url 'document:fetch-document-file' documentfile.id %}">Fetch File
+    </a>
+  {% elif documentfile.status == 'p' %}
+    <a href="{% url 'document:revise-document-file' documentfile.id %}">Revise File
+    </a>
+  {% endif %}
 {% endif %}
+
+{% if request.user.employee.designation.project_crud_permission %}
+    {% if documentfile.status  == 'r' %}
+    <a href="{% url 'document:approve-document-file' documentfile.id %}">Approve 
+    </a>
+    <p></p>
+    <a href="{% url 'document:allot-document-file' documentfile.id %}"> Allot Again
+      </a>
+    {% endif %}
+    {% if documentfile.status  == 'a' %}
+    <a href="{% url 'document:allot-document-file' documentfile.id %}">Allot to work
+      </a>
+    {% endif %}
 {% endif %}
 
 {% endblock %}

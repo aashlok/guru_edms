@@ -1,0 +1,37 @@
+{% extends "common.html" %}
+
+{% block content %}
+<div>
+<form action="" method="post">
+  {% csrf_token %}
+  
+    {{ form.as_p }}
+  
+  <input type="submit" value="Get Document List" />
+</form>
+</div>
+ <h4>Documents</h4>
+<div>
+<table >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>User</th>
+        <th>Save</th>
+        <th>Information</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for pfile in doc_list %}
+      <tr>
+        <td>{{ pfile.label }}</td>
+        <td>{{ pfile.document_user }}</td>
+        <td>{{ pfile.save_count }}</td>
+        <td>{{ pfile.information }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

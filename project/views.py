@@ -91,7 +91,10 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
             doc_last_file['file_id'] = last_file.id
             doc_last_file['last_file_name'] = last_file.filename
             doc_last_file['last_file_created'] = last_file.created_date.date()
-            doc_last_file['last_file_due'] = last_file.due_date.date()
+            if last_file.due_date:
+                doc_last_file['last_file_due'] = last_file.due_date.date()
+            else:
+                doc_last_file['last_file_due'] = 'N.A.'
             doc_last_file['last_file_status'] = last_file.get_status_display
             doc_file_list.append(doc_last_file)
 

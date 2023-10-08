@@ -19,4 +19,10 @@ urlpatterns = [
          name='fetch-document-file'),
     path('revise-document-file/<int:pk>', views.reviseDocumentFile,
          name='revise-document-file'),
+    path('approve-document-file/<int:pk>', views.approveDocumentFile,
+         name='approve-document-file'),
+    path('allot-document-file/<int:pk>', views.allotDocumentFile,
+         name='allot-document-file'),
+    path('document-browser', views.documentBrowser,
+         name='document-browser'),
 ]

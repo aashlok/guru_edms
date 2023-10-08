@@ -1,8 +1,12 @@
 {% extends "common.html" %}
 
 {% block content %}
-<h1>Project List</h1>
+<h3>Project List</h3>
+
+{% if request.user.employee.designation.project_crud_permission %}
 <a href={% url 'project:add-project' %}>Add New Project</a>
+{% endif %}
+
   {% if project_list %}
     <ul>
       {% for project in project_list %}

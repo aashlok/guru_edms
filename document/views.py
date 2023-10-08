@@ -12,11 +12,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.admin.views.decorators import staff_member_required
 
+# from company.models import Employee, Designation
 from project.models import Project
 # from company.models import Employee, Designation
 from .models import DocumentType, Document, DocumentFile
 from .forms import (DocumentTypeForm, NewDocumentForm, NewDocumentFileForm,
-                    DocumentFileRevisionForm)
+                    DocumentFileRevisionForm, DocumentBrowserForm,
+                    DocumentFileAllotForm)
 
 
 # Create your views here.
@@ -166,7 +168,7 @@ File flag is changed to working status.
     source_file.access_date = datetime.now()
     source_file.status = 'p'
     os.makedirs(fetch_folder, exist_ok=True)
-    shutil.copy(source_path, fetch_path)
+    shutil.copy(source_path, fetch_path)  # overwrite protection!
     source_file.save()
     messages.info(request, 'File is fetched to user workstation')
     return redirect('document:document-file-detail', pk=source_file.id)
@@ -206,7 +208,7 @@ File is copied from employee workstation to central file server.
         )
         old_doc_file.status = 'z'
         old_doc_file.modified_date = datetime.now()
-        old_doc_file.revision_comment = revision_note
+        new_doc_file.revision_comment = revision_note
         # copy-create new file at workstation
 #        shutil.copy(os.path.join
 #                    (old_doc_file.fetch_folder, old_doc_file.filename),
@@ -230,7 +232,7 @@ File is copied from employee workstation to central file server.
         document.save_count = document.save_count + 1
         document.save()
         messages.info(request, 'File is revised and uploaded to server')
-        return redirect('document:document-file-detail', pk=old_doc_file.id)
+        return redirect('document:document-file-detail', pk=new_doc_file.id)
 
     context = {'form': form}
     return render(request, 'document/revise-document-file.html', context)
@@ -250,3 +252,79 @@ Helper function to increment revision number of file after revision.
     new_name = '-'.join(splitted)
     at_last = new_name + extension
     return at_last
+
+
+@login_required
+def approveDocumentFile(request, pk):
+    """
+Only revised document file can be approved with project level permission
+Function does not need page of its own.
+"""
+    perm = request.user.employee.designation.project_crud_permission
+    if not perm:
+        messages.info(request, 'You dont have Document Approval Permission')
+        return redirect('company:index')
+
+    source_file = DocumentFile.objects.get(pk=pk)
+    source_file.status = 'a'
+    source_file.save()
+    messages.info(request, 'File is Approved')
+    return redirect('document:document-file-detail', pk=source_file.id)
+
+
+@login_required
+def allotDocumentFile(request, pk):
+    """
+Revised or approved file can be allotted for more work 
+with project level permission
+"""
+    perm = request.user.employee.designation.project_crud_permission
+    if not perm:
+        messages.info(request, 'You dont have Document Allottment Permission')
+        return redirect('company:index')
+
+    form = DocumentFileAllotForm()
+    source_file = DocumentFile.objects.get(pk=pk)
+    file_name = source_file.filename
+
+    if request.method == 'POST':
+        form = DocumentFileAllotForm(request.POST)
+        source_file.status = 'i'
+        source_file.due_date = request.POST.get('due_date')
+        # source_file.due_date = datetime.combine(request.POST.get('due_date'),
+        # datetime.min.time())
+        source_file.task_comment = request.POST.get('task_note')
+        source_file.save()
+        messages.info(request, 'File is Allotted to employee')
+        return redirect('document:document-file-detail', pk=source_file.id)
+
+    context = {'form': form, 'file_name': file_name}
+    return render(request, 'document/allot-document-file.html', context)
+
+
+@login_required
+def documentBrowser(request):
+    """
+Generic document browser with various filters
+Filters: Project, document type, status, due date etc.
+"""
+    employee = request.user.employee
+    doc_list = []
+    project_list = Project.objects.filter(members__id=employee.id)
+    doc_type_list = employee.designation.document_type_permission.all()
+    form = DocumentBrowserForm()
+    form.fields['project'].queryset = project_list
+    form.fields['doc_type'].queryset = doc_type_list
+
+    if request.method == 'POST':
+        form = DocumentBrowserForm(request.POST)
+        form.fields['project'].queryset = project_list
+        form.fields['doc_type'].queryset = doc_type_list
+        project = request.POST.get('project')
+        doc_type = request.POST.get('doc_type')
+        doc_list = Document.objects.filter(project=project,
+                                           document_user=employee,
+                                           document_type=doc_type)
+
+    context = {'form': form, 'doc_list': doc_list}
+    return render(request, 'document/document-browser.html', context)
