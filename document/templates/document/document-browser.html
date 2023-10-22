@@ -15,19 +15,25 @@
 <table >
     <thead>
       <tr>
-        <th>Name</th>
-        <th>User</th>
-        <th>Save</th>
-        <th>Information</th>
+        <th>Name </th>
+        <th>User </th>
+        <th>Save </th>
+        <th>Last File </th>
+	<th>Created </th>
+	<th>Due </th>
+	<th>Status</th>
       </tr>
     </thead>
     <tbody>
-    {% for pfile in doc_list %}
+    {% for doc in doc_file_list %}
       <tr>
-        <td>{{ pfile.label }}</td>
-        <td>{{ pfile.document_user }}</td>
-        <td>{{ pfile.save_count }}</td>
-        <td>{{ pfile.information }}</td>
+        <td><a href="/document/document-detail/{{ doc.id }}">{{ doc.name }}</a> </td>
+        <td>{{ doc.user }} </td>
+        <td>{{ doc.save }} </td>
+        <td><a href="/document/document-file-detail/{{ doc.file_id}}">{{ doc.last_file_name }}</a> </td>
+        <td>{{ doc.last_file_created }} </td>
+	<td>{{ doc.last_file_due}} </td>
+	<td>{{ doc.last_file_status }} </td>
       </tr>
     {% endfor %}
     </tbody>

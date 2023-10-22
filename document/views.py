@@ -310,6 +310,7 @@ Filters: Project, document type, status, due date etc.
 """
     employee = request.user.employee
     doc_list = []
+    doc_file_list = []
     project_list = Project.objects.filter(members__id=employee.id)
     doc_type_list = employee.designation.document_type_permission.all()
     form = DocumentBrowserForm()
@@ -325,6 +326,22 @@ Filters: Project, document type, status, due date etc.
         doc_list = Document.objects.filter(project=project,
                                            document_user=employee,
                                            document_type=doc_type)
+        for doc in doc_list:
+            last_file = doc.documentfile_set.last()
+            doc_last_file = {}  # dictionary for key value access in template
+            doc_last_file['id'] = doc.id
+            doc_last_file['name'] = doc.label
+            doc_last_file['user'] = doc.document_user
+            doc_last_file['save'] = doc.save_count
+            doc_last_file['file_id'] = last_file.id
+            doc_last_file['last_file_name'] = last_file.filename
+            doc_last_file['last_file_created'] = last_file.created_date.date()
+            if last_file.due_date:
+                doc_last_file['last_file_due'] = last_file.due_date.date()
+            else:
+                doc_last_file['last_file_due'] = 'N.A.'
+            doc_last_file['last_file_status'] = last_file.get_status_display
+            doc_file_list.append(doc_last_file)
 
-    context = {'form': form, 'doc_list': doc_list}
+    context = {'form': form, 'doc_file_list': doc_file_list}
     return render(request, 'document/document-browser.html', context)

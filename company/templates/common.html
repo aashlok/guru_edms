@@ -52,8 +52,12 @@
 	      </a>
 	    </li>
           </ul>
-	  {% else %}
+	  {% endif %}
+	  
 	  <ul class="sidebar-nav">
+	    {% if user.is_authenticated %}
+	    <li>User: {{ user.get_username }}
+	    </li>
 	    <li>
 	      <a href="{% url 'company:index' %}">Home
 	      </a>
@@ -65,13 +69,6 @@
 	    <li>
 	      <a href="{% url 'document:document-browser' %}">My Documents
 	      </a>
-	    </li>
-	  </ul>
-	  {% endif %}
-	  
-	  <ul class="sidebar-nav">
-	    {% if user.is_authenticated %}
-	    <li>User: {{ user.get_username }}
 	    </li>
 	    <li>
 	      <a href="{% url 'logout' %}">Logout
